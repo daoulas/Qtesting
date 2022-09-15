@@ -1,5 +1,5 @@
 
-#This solves a simple system of linear equations. See notes
+#This solves a simple system of linear equations. See notes after that
 
 from dwave.system import DWaveSampler,EmbeddingComposite
 
