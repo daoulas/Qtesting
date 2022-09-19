@@ -1,6 +1,4 @@
 
-#This solves a simple system of linear equations. See notes after that. Should work
-
 from dwave.system import DWaveSampler,EmbeddingComposite
 
 import dimod
