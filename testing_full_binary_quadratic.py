@@ -62,6 +62,7 @@ while l<length:
 for i in range(1,N):
        Q[i,i+1] = J
 
+
 for i in range(1,N+1):
        V[i] = 0
 
@@ -81,9 +82,9 @@ l = 0
 
 #unsorted output
 
-while  l<length:
-   print(1 - results.record[l][0], results.record[l][1], results.record[l][2])
-   l = l+1
+while l<length:
+    print(1 - results.record[l][0], results.record[l][1], results.record[l][2])
+    l = l+1
 
 #print(results)
 
