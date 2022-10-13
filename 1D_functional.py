@@ -25,6 +25,7 @@ b2 = 2*h/7
 b3 = 4*h/7
 
 Lan1 = 100
+Lan2 = 100
 
 #define powers 
 
@@ -41,16 +42,24 @@ b3p3 = math.pow(b3,3)
 b3p4 = math.pow(b3,4)
 
 for i in range(0,nodes+1):
-      Q[1+i*5,2+i*5] = (2*b1p3*b2*u + 3*b1p2*b2p2*u - 3*b1p2*b2*u + 2*b1*b2p3*u - 3*b1*b2p2*u + b1*b2*u)*D + Lan1*2*D2*b1*b2
-      Q[1+i*5,3+i*5] = (2*b1p3*b3*u + 3*b1p2*b3p2*u - 3*b1p2*b3*u + 2*b1*b3p3*u - 3*b1*b3p2*u + b1*b3*u)*D + Lan1*2*D2*b1*b3
-      Q[2+i*5,3+i*5] = (2*b2p3*b3*u + 3*b2p2*b3p2*u - 3*b2p2*b3*u + 2*b2*b3p3*u - 3*b2*b3p2*u + b2*b3*u)*D + Lan1*2*D2*b2*b3
-      Q[4+i*5,5+i*5] = (6*b1p2*b2*b3*u + 6*b1*b2p2*b3*u + 6*b1*b2*b3p2*u - 6*b1*b2*b3*u)*D
+      Q[1+i*5,2+i*5] = (2*b1p3*b2*u + 3*b1p2*b2p2*u - 3*b1p2*b2*u + 2*b1*b2p3*u - 3*b1*b2p2*u + b1*b2*u)*D + Lan1*2*D2*b1*b2 + Lan2*2
+      Q[1+i*5,3+i*5] = (2*b1p3*b3*u + 3*b1p2*b3p2*u - 3*b1p2*b3*u + 2*b1*b3p3*u - 3*b1*b3p2*u + b1*b3*u)*D + Lan1*2*D2*b1*b3 + Lan2*2
+      Q[2+i*5,3+i*5] = (2*b2p3*b3*u + 3*b2p2*b3p2*u - 3*b2p2*b3*u + 2*b2*b3p3*u - 3*b2*b3p2*u + b2*b3*u)*D + Lan1*2*D2*b2*b3 + Lan2*2
+      Q[1+i*5,4+i*5] = -Lan2*2
+      Q[1+i*5,5+i*5] = -Lan2*4
+      Q[2+i*5,4+i*5] = -Lan2*2
+      Q[2+i*5,5+i*5] = -Lan2*4
+      Q[3+i*5,4+i*5] = -Lan2*2
+      Q[3+i*5,5+i*5] = -Lan2*4
+      Q[4+i*5,5+i*5] = (6*b1p2*b2*b3*u + 6*b1*b2p2*b3*u + 6*b1*b2*b3p2*u - 6*b1*b2*b3*u)*D + Lan2*4
 
 
 for i in range(0,nodes+1):
-        V[1+i*5] = (-b1p3*u + 0.5*b1p2*u + 0.5*b1p4*u) + Lan1*(D2*b1p2 - 2*D*M*b1)
-        V[2+i*5] = (-b2p3*u + 0.5*b2p2*u + 0.5*b2p4*u) + Lan1*(D2*b2p2 - 2*D*M*b2)
-        V[3+i*5] = (-b3p3*u + 0.5*b3p2*u + 0.5*b3p4*u) + Lan1*(D2*b3p2 - 2*D*M*b3)
+        V[1+i*5] = (-b1p3*u + 0.5*b1p2*u + 0.5*b1p4*u) + Lan1*(D2*b1p2 - 2*D*M*b1) + Lan2
+        V[2+i*5] = (-b2p3*u + 0.5*b2p2*u + 0.5*b2p4*u) + Lan1*(D2*b2p2 - 2*D*M*b2) + Lan2
+        V[3+i*5] = (-b3p3*u + 0.5*b3p2*u + 0.5*b3p4*u) + Lan1*(D2*b3p2 - 2*D*M*b3) + Lan2
+        V[4+i*5] = Lan2
+        V[5+i*5] = 4*Lan2
 
 offset = Lan1*M*M
 
@@ -62,9 +71,20 @@ sampler = EmbeddingComposite(DWaveSampler())
 
 sampleset = sampler.sample(model, num_reads = 1)
 
-result = sampleset.first.sample
+print(sampleset.variables)
 
-print(result)
+print("=======================")
+
+#total number of variables (nodes+1)*5
+
+for i in range(1,(nodes+1)*5+1):
+    print(sampleset.first[0][i])
+    
+
+
+#result = sampleset.first.sample
+
+#print(result)
 
 #first use the exact solver which enumerates all possible states
 
