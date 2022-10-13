@@ -1,4 +1,5 @@
 
+
 from dwave.system import DWaveSampler,EmbeddingComposite
 
 import dimod
@@ -8,8 +9,34 @@ Q = {(1,2): 52, (1,3): 16, (1,4): 32, (2,3): 32, (2,4): 32,
 
 model = dimod.BinaryQuadraticModel.from_qubo(Q, offset = 0.0)
 
-exactsolver = dimod.ExactSolver()
+#exactsolver = dimod.ExactSolver()
 
-results = exactsolver.sample(model)
+#results = exactsolver.sample(model)
 
-print(results)
+#print(results)
+
+#Checking various posibilities for out put
+
+sampler = dimod.ExactSolver()
+
+sampleset = sampler.sample(model)
+
+print(sampleset)
+
+print("=======")
+
+print(sampleset.variables)
+
+print("=======")
+
+print(sampleset.record)
+
+print("=======")
+
+print(sampleset.first)
+
+print("=======")
+
+#This writes out the values of the four variables of the minimum solution
+for i in range(1,5):
+  print(sampleset.first[0][i])
