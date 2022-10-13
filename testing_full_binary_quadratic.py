@@ -54,7 +54,7 @@ while l<length:
    print(results.record[l][0], results.record[l][1], results.record[l][2])
    l = l+1
 
-print(results)
+#print(results)
 
 # We can directly consider the "compact" form J*sum_i={1,N-1} t(i)*t(i+1), where we substituted t(i) = 1 - s(i).
 # The results should be the same to those we obtained from the expanded form (keeping  in mind that s(i) = 1 -t(i)
