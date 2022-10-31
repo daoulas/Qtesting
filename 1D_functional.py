@@ -2,6 +2,8 @@ from dwave.system import DWaveSampler,EmbeddingComposite
   
 import dimod, math
 
+import dwave.inspector
+
 Q = {}
 
 V = {}
@@ -40,7 +42,7 @@ b2 = 2*h/7
 b3 = 4*h/7
 
 #Weight coeffs for constraints
-Lan2 = 100
+Lan2 = 1.5
 
 #define powers 
 
@@ -84,7 +86,7 @@ model = dimod.BinaryQuadraticModel(V, Q, offset, vartype)
 
 sampler = EmbeddingComposite(DWaveSampler())
 
-sampleset = sampler.sample(model, num_reads = 5000)
+sampleset = sampler.sample(model, num_reads = 1000, chain_strength = 7)
 
 print(sampleset.variables)
 
@@ -117,6 +119,9 @@ for i in range(0,nodes+1):
 #  print(i,sampleset.first[0][i*5+4]+sampleset.first[0][i*5+5])
  
 print("======") 
+
+
+dwave.inspector.show(sampleset)
 
 #for i in range(1,(nodes+1)*5+1):
 #    print(sampleset.first[0][i])
