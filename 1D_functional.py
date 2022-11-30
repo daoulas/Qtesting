@@ -2,6 +2,8 @@ from dwave.system import DWaveSampler,EmbeddingComposite
   
 import dimod, math
 
+# import greedy
+
 import dwave.inspector
 
 Q = {}
@@ -14,7 +16,7 @@ density_result = {}
 # q_k[i] k = 1 .. 5 and i = 0 .. n indicates the node.  In total we have n + 1 nodes. We map q_k[i] on a 1-D matrix
 # q[k+i*5]
 
-nodes = 5 
+nodes = 5
 
 #largest value of p
 
@@ -42,7 +44,7 @@ b2 = 2*h/7
 b3 = 4*h/7
 
 #Weight coeffs for constraints
-Lan2 = 1.5
+Lan2 = 3.5
 
 #define powers 
 
@@ -78,6 +80,15 @@ for i in range(0,nodes+1):
         V[4+i*5] = Lan2
         V[5+i*5] = 4*Lan2
 
+print("Coupling coefficients")
+
+for i in range(1,6):
+    for j in range(i+1,6):
+        print(i, j, Q[i,j])
+ 
+for i in range(1,6):
+    print(i,V[i])
+
 offset = 0
 
 vartype = dimod.BINARY
@@ -86,7 +97,9 @@ model = dimod.BinaryQuadraticModel(V, Q, offset, vartype)
 
 sampler = EmbeddingComposite(DWaveSampler())
 
-sampleset = sampler.sample(model, num_reads = 1000, chain_strength = 7)
+#sampler = greedy.SteepestDescentSolver()
+
+sampleset = sampler.sample(model, num_reads = 1000, chain_strength = 15)
 
 print(sampleset.variables)
 
@@ -119,7 +132,6 @@ for i in range(0,nodes+1):
 #  print(i,sampleset.first[0][i*5+4]+sampleset.first[0][i*5+5])
  
 print("======") 
-
 
 dwave.inspector.show(sampleset)
 
