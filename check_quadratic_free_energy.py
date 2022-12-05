@@ -38,15 +38,13 @@ b2p2 = math.pow(b2,2)
 b3p2 = math.pow(b3,2)
 
 
-for i in range(1,4):
-      Q[1,2] = -b1*b2*u
-      Q[1,3] = -b1*b3*u
-      Q[2,3] = -b2*b3*u
+Q[1,2] = -b1*b2*u
+Q[1,3] = -b1*b3*u
+Q[2,3] = -b2*b3*u
 
-for i in range(1,4):
-        V[1] = -0.5*b1p2*u + 0.5*b1*po*u
-        V[2] = -0.5*b2p2*u + 0.5*b2*po*u
-        V[3] = -0.5*b3p2*u + 0.5*b3*po*u
+V[1] = -0.5*b1p2*u + 0.5*b1*po*u
+V[2] = -0.5*b2p2*u + 0.5*b2*po*u
+V[3] = -0.5*b3p2*u + 0.5*b3*po*u
 
 print("Coupling coefficients")
 
