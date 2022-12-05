@@ -16,7 +16,7 @@ density_result = {}
 # q_k[i] k = 1 .. 5 and i = 0 .. n indicates the node.  In total we have n + 1 nodes. We map q_k[i] on a 1-D matrix
 # q[k+i*5]
 
-nodes = 5
+nodes = 0
 
 #largest value of p
 
@@ -33,7 +33,7 @@ chempot = 0
 #step of lattice in space 
 D = 1
 
-u = 5
+u = 5.
 
 D2 = D*D 
 #
@@ -99,7 +99,7 @@ sampler = EmbeddingComposite(DWaveSampler())
 
 #sampler = greedy.SteepestDescentSolver()
 
-sampleset = sampler.sample(model, num_reads = 1000, chain_strength = 15)
+sampleset = sampler.sample(model, num_reads = 3000, chain_strength = 15)
 
 print(sampleset.variables)
 
@@ -129,6 +129,7 @@ print("Testing constraint between q1,q2,q3 and q4,q5")
 for i in range(0,nodes+1):
     print("node:", i, "constraint value:", sampleset.first[0][i*5+1]+sampleset.first[0][i*5+2]+sampleset.first[0][i*5+3]-
           sampleset.first[0][i*5+4]-2*sampleset.first[0][i*5+5])
+        
 #  print(i,sampleset.first[0][i*5+4]+sampleset.first[0][i*5+5])
  
 print("======") 
