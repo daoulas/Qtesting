@@ -16,7 +16,7 @@ density_result = {}
 # q_k[i] k = 1 .. 5 and i = 0 .. n indicates the node.  In total we have n + 1 nodes. We map q_k[i] on a 1-D matrix
 # q[k+i*5]
 
-nodes = 5 
+nodes = 4 
 
 #largest value of p
 
@@ -38,6 +38,12 @@ u = 5.
 D2 = D*D 
 #
 po2 = po*po
+
+Kappa = 100.
+
+Coeff = (Kappa/2.)*(1/(4*D2))
+
+print("Coeff = ", Coeff)
 
 b1 = h/7
 b2 = 2*h/7
@@ -61,33 +67,56 @@ b3p3 = math.pow(b3,3)
 b3p4 = math.pow(b3,4)
 
 for i in range(0,nodes+1):
-      Q[1+i*5,2+i*5] = (2*b1p3*b2*u + 3*b1p2*b2p2*u - 3*b1p2*b2*u*po + 2*b1*b2p3*u - 3*b1*b2p2*u*po + b1*b2*po2*u)*D + Lan2*2
-      Q[1+i*5,3+i*5] = (2*b1p3*b3*u + 3*b1p2*b3p2*u - 3*b1p2*b3*u*po + 2*b1*b3p3*u - 3*b1*b3p2*u*po + b1*b3*po2*u)*D + Lan2*2
-      Q[2+i*5,3+i*5] = (2*b2p3*b3*u + 3*b2p2*b3p2*u - 3*b2p2*b3*u*po + 2*b2*b3p3*u - 3*b2*b3p2*u*po + b2*b3*po2*u)*D + Lan2*2
-      Q[1+i*5,4+i*5] = -Lan2*2
-      Q[1+i*5,5+i*5] = -Lan2*4
-      Q[2+i*5,4+i*5] = -Lan2*2
-      Q[2+i*5,5+i*5] = -Lan2*4
-      Q[3+i*5,4+i*5] = -Lan2*2
-      Q[3+i*5,5+i*5] = -Lan2*4
-      Q[4+i*5,5+i*5] = (6*b1p2*b2*b3*u + 6*b1*b2p2*b3*u + 6*b1*b2*b3p2*u - 6*b1*b2*b3*po*u)*D + Lan2*4
+      Q[1+i*3,2+i*3] =  4.*b1*b2*Coeff 
+      Q[1+i*3,3+i*3] =  4.*b1*b3*Coeff 
+      Q[2+i*3,3+i*3] =  4.*b2*b3*Coeff 
+     
+for i in range(1,nodes): 
+     Q[1+(i-1)*3,1+(i+1)*3] = -2*b1p2*Coeff
+     Q[1+(i-1)*3,2+(i+1)*3] = -2*b1*b2*Coeff
+     Q[2+(i-1)*3,1+(i+1)*3] = -2*b1*b2*Coeff
+     Q[1+(i-1)*3,3+(i+1)*3] = -2*b1*b3*Coeff
+     Q[3+(i-1)*3,1+(i+1)*3] = -2*b1*b3*Coeff
+     Q[2+(i-1)*3,2+(i+1)*3] = -2*b2p2*Coeff
+     Q[2+(i-1)*3,3+(i+1)*3] = -2*b2*b3*Coeff
+     Q[3+(i-1)*3,2+(i+1)*3] = -2*b2*b3*Coeff 
+     Q[3+(i-1)*3,3+(i+1)*3] = -2*b3p2*Coeff
 
+
+Q[1+1*3,1+nodes*3] = -2*b1p2*Coeff
+Q[1+1*3,2+nodes*3] = -2*b1*b2*Coeff
+Q[2+1*3,1+nodes*3] = -2*b1*b2*Coeff
+Q[1+1*3,3+nodes*3] = -2*b1*b3*Coeff
+Q[3+1*3,1+nodes*3] = -2*b1*b3*Coeff
+Q[2+1*3,2+nodes*3] = -2*b2p2*Coeff
+Q[2+1*3,3+nodes*3] = -2*b2*b3*Coeff
+Q[3+1*3,2+nodes*3] = -2*b2*b3*Coeff 
+Q[3+1*3,3+nodes*3] = -2*b3p2*Coeff
+
+
+Q[1+0*3,1+(nodes-1)*3] = -2*b1p2*Coeff
+Q[1+0*3,2+(nodes-1)*3] = -2*b1*b2*Coeff
+Q[2+0*3,1+(nodes-1)*3] = -2*b1*b2*Coeff
+Q[1+0*3,3+(nodes-1)*3] = -2*b1*b3*Coeff
+Q[3+0*3,1+(nodes-1)*3] = -2*b1*b3*Coeff
+Q[2+0*3,2+(nodes-1)*3] = -2*b2p2*Coeff
+Q[2+0*3,3+(nodes-1)*3] = -2*b2*b3*Coeff
+Q[3+0*3,2+(nodes-1)*3] = -2*b2*b3*Coeff 
+Q[3+0*3,3+(nodes-1)*3] = -2*b3p2*Coeff
 
 for i in range(0,nodes+1):
-        V[1+i*5] = (-b1p3*u*po + 0.5*b1p2*u*po2 + 0.5*b1p4*u) + Lan2 - chempot*D*b1
-        V[2+i*5] = (-b2p3*u*po + 0.5*b2p2*u*po2 + 0.5*b2p4*u) + Lan2 - chempot*D*b2
-        V[3+i*5] = (-b3p3*u*po + 0.5*b3p2*u*po2 + 0.5*b3p4*u) + Lan2 - chempot*D*b3
-        V[4+i*5] = Lan2
-        V[5+i*5] = 4*Lan2
+        V[1+i*3] = 2.*Coeff*b1p2
+        V[2+i*3] = 2.*Coeff*b2p2
+        V[3+i*3] = 2.*Coeff*b3p2
 
-print("Coupling coefficients")
+#print("Coupling coefficients")
 
-for i in range(1,6):
-    for j in range(i+1,6):
-        print(i, j, Q[i,j])
+#for i in range(1,6):
+#    for j in range(i+1,6):
+#        print(i, j, Q[i,j])
  
-for i in range(1,6):
-    print(i,V[i])
+#for i in range(1,6):
+#    print(i,V[i])
 
 offset = 0
 
@@ -108,7 +137,7 @@ print("=======================")
 #total number of variables (nodes+1)*5
 
 for i in range(0,nodes+1):
-    density_result[i] = b1*sampleset.first[0][i*5+1] + b2*sampleset.first[0][i*5+2] + b3*sampleset.first[0][i*5+3]
+    density_result[i] = b1*sampleset.first[0][i*3+1] + b2*sampleset.first[0][i*3+2] + b3*sampleset.first[0][i*3+3]
     print(0.5*D + i*D, density_result[i])
 
 print("Calculate total mass in box")
@@ -124,12 +153,6 @@ print("Mass = ", Mass)
 
 print("Free energy = ", Fenergy - chempot*Mass)
 
-print("Testing constraint between q1,q2,q3 and q4,q5")
-
-for i in range(0,nodes+1):
-    print("node:", i, "constraint value:", sampleset.first[0][i*5+1]+sampleset.first[0][i*5+2]+sampleset.first[0][i*5+3]-
-          sampleset.first[0][i*5+4]-2*sampleset.first[0][i*5+5])
-        
 #  print(i,sampleset.first[0][i*5+4]+sampleset.first[0][i*5+5])
  
 print("======") 

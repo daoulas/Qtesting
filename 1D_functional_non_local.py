@@ -16,7 +16,9 @@ density_result = {}
 # q_k[i] k = 1 .. 5 and i = 0 .. n indicates the node.  In total we have n + 1 nodes. We map q_k[i] on a 1-D matrix
 # q[k+i*5]
 
-nodes = 5 
+# with the current finite difference scheme nodes must be even
+
+nodes = 4 
 
 #largest value of p
 
@@ -33,11 +35,17 @@ chempot = 0
 #step of lattice in space 
 D = 1
 
-u = 5.
+u = 10.
 
 D2 = D*D 
 #
 po2 = po*po
+
+Kappa = 100.
+
+Coeff = (Kappa/2.)*(1/(4*D2))
+
+print("Coeff = ", Coeff)
 
 b1 = h/7
 b2 = 2*h/7
@@ -61,9 +69,9 @@ b3p3 = math.pow(b3,3)
 b3p4 = math.pow(b3,4)
 
 for i in range(0,nodes+1):
-      Q[1+i*5,2+i*5] = (2*b1p3*b2*u + 3*b1p2*b2p2*u - 3*b1p2*b2*u*po + 2*b1*b2p3*u - 3*b1*b2p2*u*po + b1*b2*po2*u)*D + Lan2*2
-      Q[1+i*5,3+i*5] = (2*b1p3*b3*u + 3*b1p2*b3p2*u - 3*b1p2*b3*u*po + 2*b1*b3p3*u - 3*b1*b3p2*u*po + b1*b3*po2*u)*D + Lan2*2
-      Q[2+i*5,3+i*5] = (2*b2p3*b3*u + 3*b2p2*b3p2*u - 3*b2p2*b3*u*po + 2*b2*b3p3*u - 3*b2*b3p2*u*po + b2*b3*po2*u)*D + Lan2*2
+      Q[1+i*5,2+i*5] = (2*b1p3*b2*u + 3*b1p2*b2p2*u - 3*b1p2*b2*u*po + 2*b1*b2p3*u - 3*b1*b2p2*u*po + b1*b2*po2*u)*D + 4.*b1*b2*Coeff + Lan2*2
+      Q[1+i*5,3+i*5] = (2*b1p3*b3*u + 3*b1p2*b3p2*u - 3*b1p2*b3*u*po + 2*b1*b3p3*u - 3*b1*b3p2*u*po + b1*b3*po2*u)*D + 4.*b1*b3*Coeff + Lan2*2
+      Q[2+i*5,3+i*5] = (2*b2p3*b3*u + 3*b2p2*b3p2*u - 3*b2p2*b3*u*po + 2*b2*b3p3*u - 3*b2*b3p2*u*po + b2*b3*po2*u)*D + 4.*b2*b3*Coeff + Lan2*2
       Q[1+i*5,4+i*5] = -Lan2*2
       Q[1+i*5,5+i*5] = -Lan2*4
       Q[2+i*5,4+i*5] = -Lan2*2
@@ -72,22 +80,54 @@ for i in range(0,nodes+1):
       Q[3+i*5,5+i*5] = -Lan2*4
       Q[4+i*5,5+i*5] = (6*b1p2*b2*b3*u + 6*b1*b2p2*b3*u + 6*b1*b2*b3p2*u - 6*b1*b2*b3*po*u)*D + Lan2*4
 
+for i in range(1,nodes): 
+     Q[1+(i-1)*5,1+(i+1)*5] = -2*b1p2*Coeff
+     Q[1+(i-1)*5,2+(i+1)*5] = -2*b1*b2*Coeff
+     Q[2+(i-1)*5,1+(i+1)*5] = -2*b1*b2*Coeff
+     Q[1+(i-1)*5,3+(i+1)*5] = -2*b1*b3*Coeff
+     Q[3+(i-1)*5,1+(i+1)*5] = -2*b1*b3*Coeff
+     Q[2+(i-1)*5,2+(i+1)*5] = -2*b2p2*Coeff
+     Q[2+(i-1)*5,3+(i+1)*5] = -2*b2*b3*Coeff
+     Q[3+(i-1)*5,2+(i+1)*5] = -2*b2*b3*Coeff 
+     Q[3+(i-1)*5,3+(i+1)*5] = -2*b3p2*Coeff
+
+
+Q[1+1*5,1+nodes*5] = -2*b1p2*Coeff
+Q[1+1*5,2+nodes*5] = -2*b1*b2*Coeff
+Q[2+1*5,1+nodes*5] = -2*b1*b2*Coeff
+Q[1+1*5,3+nodes*5] = -2*b1*b3*Coeff
+Q[3+1*5,1+nodes*5] = -2*b1*b3*Coeff
+Q[2+1*5,2+nodes*5] = -2*b2p2*Coeff
+Q[2+1*5,3+nodes*5] = -2*b2*b3*Coeff
+Q[3+1*5,2+nodes*5] = -2*b2*b3*Coeff 
+Q[3+1*5,3+nodes*5] = -2*b3p2*Coeff
+
+
+Q[1+0*5,1+(nodes-1)*5] = -2*b1p2*Coeff
+Q[1+0*5,2+(nodes-1)*5] = -2*b1*b2*Coeff
+Q[2+0*5,1+(nodes-1)*5] = -2*b1*b2*Coeff
+Q[1+0*5,3+(nodes-1)*5] = -2*b1*b3*Coeff
+Q[3+0*5,1+(nodes-1)*5] = -2*b1*b3*Coeff
+Q[2+0*5,2+(nodes-1)*5] = -2*b2p2*Coeff
+Q[2+0*5,3+(nodes-1)*5] = -2*b2*b3*Coeff
+Q[3+0*5,2+(nodes-1)*5] = -2*b2*b3*Coeff 
+Q[3+0*5,3+(nodes-1)*5] = -2*b3p2*Coeff
 
 for i in range(0,nodes+1):
-        V[1+i*5] = (-b1p3*u*po + 0.5*b1p2*u*po2 + 0.5*b1p4*u) + Lan2 - chempot*D*b1
-        V[2+i*5] = (-b2p3*u*po + 0.5*b2p2*u*po2 + 0.5*b2p4*u) + Lan2 - chempot*D*b2
-        V[3+i*5] = (-b3p3*u*po + 0.5*b3p2*u*po2 + 0.5*b3p4*u) + Lan2 - chempot*D*b3
+        V[1+i*5] = (-b1p3*u*po + 0.5*b1p2*u*po2 + 0.5*b1p4*u) + Lan2 - chempot*D*b1 + 2.*Coeff*b1p2
+        V[2+i*5] = (-b2p3*u*po + 0.5*b2p2*u*po2 + 0.5*b2p4*u) + Lan2 - chempot*D*b2 + 2.*Coeff*b2p2
+        V[3+i*5] = (-b3p3*u*po + 0.5*b3p2*u*po2 + 0.5*b3p4*u) + Lan2 - chempot*D*b3 + 2.*Coeff*b3p2
         V[4+i*5] = Lan2
         V[5+i*5] = 4*Lan2
 
-print("Coupling coefficients")
+#print("Coupling coefficients")
 
-for i in range(1,6):
-    for j in range(i+1,6):
-        print(i, j, Q[i,j])
+#for i in range(1,6):
+#    for j in range(i+1,6):
+#        print(i, j, Q[i,j])
  
-for i in range(1,6):
-    print(i,V[i])
+#for i in range(1,6):
+#    print(i,V[i])
 
 offset = 0
 
@@ -99,7 +139,7 @@ sampler = EmbeddingComposite(DWaveSampler())
 
 #sampler = greedy.SteepestDescentSolver()
 
-sampleset = sampler.sample(model, num_reads = 1000, chain_strength = 15)
+sampleset = sampler.sample(model, num_reads = 3500, chain_strength = 15)
 
 print(sampleset.variables)
 
