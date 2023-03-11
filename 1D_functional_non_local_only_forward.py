@@ -96,9 +96,26 @@ vartype = dimod.BINARY
 
 model = dimod.BinaryQuadraticModel(V, Q, offset, vartype)
 
-sampler = EmbeddingComposite(DWaveSampler())
+#This is the old way I used:
 
-sampleset = sampler.sample(model, num_reads = runs, chain_strength = Kappa)
+#sampler = EmbeddingComposite(DWaveSampler())
+
+#New way for calling the sampler
+
+qpu_advantage = DWaveSampler()
+
+sampler = EmbeddingComposite(qpu_advantage)
+
+print("Maximum available annealing time:")
+print(qpu_advantage.properties["annealing_time_range"][1]) 
+
+long_time = qpu_advantage.properties["annealing_time_range"][1]*0.4
+
+long_time = 40
+
+sampleset = sampler.sample(model, num_reads = runs, chain_strength = Kappa, annealing_time=long_time)
+
+#sampleset = sampler.sample(model, num_reads = runs, chain_strength = Kappa)
 
 #ANALYSIS OF SOLUTIONS STARTS HERE 
 
@@ -175,7 +192,9 @@ print("Mass = ", Mass)
  
 print("======") 
 
-dwave.inspector.show(sampleset)
+print(sampleset.info["timing"])
+
+#dwave.inspector.show(sampleset)
 
 #for i in range(1,(nodes+1)*5+1):
 #    print(sampleset.first[0][i])
