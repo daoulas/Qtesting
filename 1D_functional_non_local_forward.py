@@ -18,7 +18,7 @@ density_result = {}
 
 nodes =  5
 
-runs = 5000
+runs = 1000
 
 #largest value of p
 
@@ -35,12 +35,12 @@ chempot = 0
 #step of lattice in space 
 D = 1
 
-u = 5.
+u = 15.
 
 D2 = D*D 
 #
 
-Kappa = 5.
+Kappa = 25.
 
 Coeff = (Kappa/2.)*(1/D)
 
@@ -57,7 +57,7 @@ b2 = 2*h/7
 b3 = 4*h/7
 
 #Weight coeffs for constraints
-Lan2 = 1.5
+Lan2 = 3.5
 
 #define powers 
 
@@ -113,15 +113,6 @@ for i in range(0,nodes+1):
         V[4+i*5] = Lan2
         V[5+i*5] = 4*Lan2
 
-print("Coupling coefficients")
-
-for i in range(1,6):
-    for j in range(1,6):
-        print(i, j, Q[i,j])
- 
-for i in range(1,6):
-    print(i,V[i])
-
 offset = 0
 
 vartype = dimod.BINARY
@@ -146,7 +137,7 @@ long_time = qpu_advantage.properties["annealing_time_range"][1]*0.4
 
 long_time = 40
 
-sampleset = sampler.sample(model, num_reads = runs, chain_strength = Kappa, annealing_time=long_time)
+sampleset = sampler.sample(model, num_reads = runs, chain_strength = 25, annealing_time=long_time)
 
 #sampleset = sampler.sample(model, num_reads = runs, chain_strength = Kappa)
 
@@ -197,8 +188,8 @@ for i in range(0,all_solutions):
         print("Testing constraint between q1,q2,q3 and q4,q5")
 
         for k in range(0,nodes+1):
-           print("node:", k, "constraint value:", sampleset.record[0][k*5+1]+sampleset.record[0][k*5+2]+sampleset.record[0][k*5+3]-
-           sampleset.record[0][k*5+4]-2*sampleset.record[0][k*5+5])
+           print("node:", k, "constraint value:", sampleset.record[i][0][k*5+0]+sampleset.record[i][0][k*5+1]+sampleset.record[i][0][k*5+2]-
+           sampleset.record[i][0][k*5+3]-2*sampleset.record[i][0][k*5+4])
 
 print("=======================")
 
