@@ -16,7 +16,7 @@ density_result = {}
 # q_k[i] k = 1 .. 5 and i = 0 .. n indicates the node.  In total we have n + 1 nodes. We map q_k[i] on a 1-D matrix
 # q[k+i*5]
 
-nodes = 5 
+nodes =  5
 
 #largest value of p
 
