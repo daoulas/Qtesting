@@ -19,7 +19,7 @@ density_result = {}
 # q_k[i] k = 1 .. 3 and i = 0 .. n indicates the node.  In total we have n + 1 nodes. We map q_k[i] on a 1-D matrix
 # q[k+i*3]
 
-nodes = 5 
+nodes = 4 
 
 runs = 5000
 
@@ -31,7 +31,7 @@ h = 1
 D = 1
 
 #
-Kappa = 5.
+Kappa = 5
 
 Coeff = (Kappa/2.)*(1/D)  
 
@@ -113,7 +113,7 @@ long_time = qpu_advantage.properties["annealing_time_range"][1]*0.4
 
 long_time = 40
 
-sampleset = sampler.sample(model, num_reads = runs, chain_strength = Kappa, annealing_time=long_time)
+sampleset = sampler.sample(model, num_reads = runs, chain_strength = 2, annealing_time=long_time)
 
 #sampleset = sampler.sample(model, num_reads = runs, chain_strength = Kappa)
 
@@ -150,7 +150,18 @@ print(Energymax)
 # Tol is the tolerance for differnces between minimum solutions due to numerics
 
 Tol = 1e-08
+
+hnd = open("solutions_nodes_5.dat","w")
+
 for i in range(0,all_solutions):
+
+#   Output all solutions into a file for analysis 
+    for j in range(0,nodes+1):    
+     density_result[j] = b1*sampleset.record[i][0][j*3+0] + b2*sampleset.record[i][0][j*3+1] + b3*sampleset.record[i][0][j*3+2]
+
+    hnd.write("{0:2.7f} {1:2.7f} {2:2.7f} {3:2.7f} {4:2.7f} {5:2.7f}\n".format(
+    density_result[0],density_result[1],density_result[2],density_result[3],density_result[4],sampleset.record[i][1]))
+
     if(abs(sampleset.record[i][1] - Energymax)<Tol):
         print("Solution", numoptsolutions)
         numoptsolutions = numoptsolutions + 1
@@ -161,6 +172,7 @@ for i in range(0,all_solutions):
           density_result[j] = b1*sampleset.record[i][0][j*3+0] + b2*sampleset.record[i][0][j*3+1] + b3*sampleset.record[i][0][j*3+2]
           print(0.5*D + j*D, density_result[j])
 
+hnd.close()
 
 print("=======================")
 
@@ -194,7 +206,7 @@ print("======")
 
 print(sampleset.info["timing"])
 
-#dwave.inspector.show(sampleset)
+dwave.inspector.show(sampleset)
 
 #for i in range(1,(nodes+1)*5+1):
 #    print(sampleset.first[0][i])
